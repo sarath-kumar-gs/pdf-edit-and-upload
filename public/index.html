@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navadhiti</title>
+</head>
+<body>
+    <h1>Edit and Upload PDF</h1>
+    <input type="file" name="file" id="inpFile">
+    <button type="button" id="btnEdit">Edit</button>
+    <button type="button" id="btnUpload" >Upload</button>
+    <br><br>
+    <textarea style="width:800px; height:1200px;" placeholder="Change the date" id="textResult"></textarea>
+
+    <script>
+        const inpFile = document.getElementById("inpFile");
+        const btnEdit = document.getElementById("btnEdit");
+        const btnUpload = document.getElementById("btnUpload");
+        const textResult = document.getElementById("textResult");
+
+        btnEdit.addEventListener("click", () => {
+            const formData = new FormData();
+
+            formData.append("pdfFile", inpFile.files[0]);
+            
+            fetch("/", {
+                method: "post",
+                body: formData
+            }).then(res => {
+                return res.text();
+            }).then(extractedText => {
+                textResult.value = extractedText.trim();
+            });
+        });
+
+        btnUpload.addEventListener("click", () => {
+console.log(textResult.value);
+            fetch("/upload", {
+                method: "post",
+                headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ text: textResult.value })
+            });
+    });
+      
+    </script>
+</body>
+</html>
